@@ -1,0 +1,32 @@
+version: '2'
+services:
+  traefik:
+    image: traefik
+    command: --api --docker --docker.domain=docker.localhost --logLevel=INFO
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+    labels:
+      - "traefik.enable=true"
+      - "traefik.frontend.rule=Host:monitor.docker.localhost"
+      - "traefik.port=8080"
+    networks:
+      - proxy
+  phoneapp:
+    image: ipman1971/masmovil-challenge:latest
+    ports:
+      - 8085
+    labels:
+      - "traefik.backend=phoneapp"
+      - "traefik.frontend.rule=Host:phoneapp.docker.localhost"
+      - "traefik.docker.network=proxy"
+      - "traefik.port=8085"
+    networks:
+      - proxy
+    depends_on:
+        - traefik
+networks:
+  proxy:
+    external: true

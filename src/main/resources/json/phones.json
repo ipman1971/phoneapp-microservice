@@ -1,0 +1,37 @@
+[
+  {
+    "reference": 1,
+    "model": "OnePlus5",
+    "description": "description for OnePlus5",
+    "image": "./oneplus5.png",
+    "price": 450.78
+  },
+  {
+    "reference": 2,
+    "model": "Xiaomi MA1",
+    "description": "description for Xiaomi MA1",
+    "image": "./xiaomima1.png",
+    "price": 179.50
+  },
+  {
+    "reference": 3,
+    "model": "iphone-7",
+    "description": "description for Iphone 7",
+    "image": "./iphone7.png",
+    "price": 790.30
+  },
+  {
+    "reference": 4,
+    "model": "Xiaomi MI5",
+    "description": "description for Xiaomi MI5",
+    "image": "./xiaomi-mi5.png",
+    "price": 290.35
+  },
+  {
+    "reference": 5,
+    "model": "Leeco S3",
+    "description": "description for Leeco S3",
+    "image": "./leeco-s3.png",
+    "price": 120.70
+  }
+]
