@@ -1,6 +1,8 @@
 package com.masmovil.challenge.repository;
 
+import com.masmovil.challenge.DbUtilTest;
 import com.masmovil.challenge.domain.Phone;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +19,19 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class PhonesRepositoryTest {
+public class PhonesRepositoryTest extends DbUtilTest {
 
     @Autowired
     private PhonesRepository repository;
 
+    @Before
+    public void setup() {
+        removePhones();
+    }
+
     @Test
     public void create() throws Exception {
-        clearTable();
-        Phone phone = createPhone();
+        Phone phone = createPhone(1,200.25);
         repository.create(phone.getReference(), phone);
 
         Phone onePhone = (Phone) repository.findOne(phone.getReference());
@@ -35,8 +41,7 @@ public class PhonesRepositoryTest {
 
     @Test
     public void findOne() throws Exception {
-        clearTable();
-        Phone phone = createPhone();
+        Phone phone = createPhone(1, 200.25);
         repository.create(phone.getReference(), phone);
 
         Phone onePhone = (Phone) repository.findOne(phone.getReference());
@@ -46,8 +51,7 @@ public class PhonesRepositoryTest {
 
     @Test
     public void notFindOne() throws Exception {
-        clearTable();
-        Phone phone = createPhone();
+        Phone phone = createPhone(1, 220.35);
         repository.create(phone.getReference(), phone);
 
         Phone onePhone =(Phone)repository.findOne(10);
@@ -57,8 +61,7 @@ public class PhonesRepositoryTest {
 
     @Test
     public void findAll() throws Exception {
-        clearTable();
-        Phone phone = createPhone();
+        Phone phone = createPhone(1,345.56);
         repository.create(phone.getReference(), phone);
 
         assertThat(repository.findAll().size(), is(equalTo(1)));
@@ -66,38 +69,26 @@ public class PhonesRepositoryTest {
 
     @Test
     public void update() throws Exception {
-        clearTable();
-        Phone phone = createPhone();
+        Phone phone = createPhone(1, 220.50);
         repository.create(phone.getReference(), phone);
 
 
-        phone.setDescription("bad phone");
+        phone.setPrice(300.20);
         repository.update(phone.getReference(), phone);
 
         Phone onePhone = (Phone) repository.findOne(phone.getReference());
 
-        assertThat(onePhone.getDescription(), is(equalTo("bad phone")));
+        assertThat(onePhone.getPrice(), is(equalTo(300.20)));
     }
 
     @Test
     public void delete() throws Exception {
-        clearTable();
-        Phone phone = createPhone();
+        Phone phone = createPhone(2,500.70);
         repository.create(phone.getReference(), phone);
 
         repository.delete(phone.getReference());
 
         assertThat(repository.findAll().size(), is(equalTo(0)));
-
-    }
-
-    private Phone createPhone() {
-        return new Phone(1,"iphone-7","good phone","./iphone7.png",600.35);
-    }
-
-    private void clearTable() {
-        List<Phone> phoneList = repository.findAll();
-        phoneList.stream().forEach(phone -> repository.delete(phone.getReference()));
     }
 
 }

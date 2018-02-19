@@ -1,7 +1,9 @@
 package com.masmovil.challenge.services;
 
+import com.masmovil.challenge.DbUtilTest;
 import com.masmovil.challenge.domain.Order;
 import com.masmovil.challenge.repository.OrdersRepository;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +22,22 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class OrdersServiceTest {
+public class OrdersServiceTest extends DbUtilTest {
 
     @Autowired
-    OrdersService ordersService;
+    private OrdersService ordersService;
 
     @Autowired
-    OrdersRepository ordersRepository;
+    private OrdersRepository ordersRepository;
+
+    @Before
+    public void setup() {
+        removeOrders();
+    }
 
     @Test
     public void create() throws Exception {
-        clearTable();
-        Order order = createOrder();
+        Order order = createOrder(2000,1,2);
         assertThat(order.getAmount(),is(equalTo(0.0)));
 
         Order otherOrder = ordersService.create(order);
@@ -42,9 +48,8 @@ public class OrdersServiceTest {
 
     @Test
     public void findAll() throws Exception {
-        clearTable();
-        List<Order> orders = createOrderList();
-        orders.stream().forEach(order -> ordersService.create(order));
+        List<Order> orders = createOrderList(10,2,3);
+        orders.forEach(order -> ordersService.create(order));
         List<Order> otherOrders = ordersService.findAll();
 
         assertThat(otherOrders.size(),is(equalTo(orders.size())));
@@ -54,37 +59,11 @@ public class OrdersServiceTest {
 
     @Test
     public void findOne() throws Exception {
-        clearTable();
-        List<Order> orders = createOrderList();
-        orders.stream().forEach(order -> ordersService.create(order));
-        Order order = ordersService.findOne(orders.get(5).getReference());
+        List<Order> orders = createOrderList(5,1,2);
+        orders.forEach(order -> ordersService.create(order));
+        Order order = ordersService.findOne(orders.get(1).getReference());
 
-        assertThat(order,is(equalTo(orders.get(5))));
-    }
-
-
-    private Order createOrder() {
-        List<Integer> products = new ArrayList<>();
-        products.add(1);
-        products.add(2);
-        return new Order(1000,"Pepe","Corredera","pca@gmail.com",products);
-    }
-
-    private List<Order> createOrderList() {
-        List<Integer> products = new ArrayList<>();
-        products.add(2);
-        products.add(3);
-        List<Order> orders=new ArrayList<>();
-        for(int i=0;i<10;i++) {
-            Order order = new Order(99+i,"name-"+i,"surname-"+i,"email"+i+"@gmail.com",products);
-            orders.add(order);
-        }
-        return orders;
-    }
-
-    private void clearTable() {
-        List<Order> orders = ordersService.findAll();
-        orders.stream().forEach(order -> ordersRepository.delete(order.getReference()));
+        assertThat(order,is(equalTo(orders.get(1))));
     }
 
 }

@@ -97,9 +97,4 @@ public class OrdersControllerTest {
         return orders;
     }
 
-//    private void clearTable() {
-//        List<Order> orders = ordersService.findAll();
-//        orders.stream().forEach(order -> ordersRepository.delete(order.getReference()));
-//    }
-
 }

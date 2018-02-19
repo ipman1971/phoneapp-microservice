@@ -298,7 +298,7 @@ http://localhost:8085/swagger-ui.html#/orders-controller
 ```
 docker network create proxy
 cd traefik
-docker compose -d --scale phoneapp=3
+docker-compose up -d --scale phoneapp=3
 ```
 
 ### Verify multiples instances for this containers

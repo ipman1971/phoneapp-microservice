@@ -1,6 +1,8 @@
 package com.masmovil.challenge.repository;
 
+import com.masmovil.challenge.DbUtilTest;
 import com.masmovil.challenge.domain.Order;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +20,19 @@ import static org.junit.Assert.assertThat;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class OrdersRepositoryTest {
+public class OrdersRepositoryTest extends DbUtilTest {
 
     @Autowired
     private OrdersRepository repository;
 
+    @Before
+    public void setup() {
+        removeOrders();
+    }
+
     @Test
     public void create() throws Exception {
-        clearTable();
-        Order order = createOrder();
+        Order order = createOrder(10,1,2);
         repository.create(order.getReference(), order);
 
         Order oneOrder = (Order) repository.findOne(order.getReference());
@@ -36,8 +42,7 @@ public class OrdersRepositoryTest {
 
     @Test
     public void findOne() throws Exception {
-        clearTable();
-        Order order = createOrder();
+        Order order = createOrder(10,1,2);
         repository.create(order.getReference(), order);
 
         Order oneOrder = (Order) repository.findOne(order.getReference());
@@ -47,19 +52,17 @@ public class OrdersRepositoryTest {
 
     @Test
     public void notFindOne() throws Exception {
-        clearTable();
-        Order order = createOrder();
+        Order order = createOrder(10,1);
         repository.create(order.getReference(), order);
 
-        Order oneOrder =(Order)repository.findOne(10);
+        Order oneOrder =(Order)repository.findOne(14);
 
         assertThat(oneOrder,is(nullValue()));
     }
 
     @Test
     public void findAll() throws Exception {
-        clearTable();
-        Order order = createOrder();
+        Order order = createOrder(10,2);
         repository.create(order.getReference(), order);
 
         assertThat(repository.findAll().size(), is(equalTo(1)));
@@ -67,41 +70,27 @@ public class OrdersRepositoryTest {
 
     @Test
     public void update() throws Exception {
-        clearTable();
-        Order order = createOrder();
+        Order order = createOrder(10,1,2,3);
         repository.create(order.getReference(), order);
 
 
-        order.setName("Jose");
+        order.setName("name-34");
         repository.update(order.getReference(), order);
 
         Order oneOrder = (Order) repository.findOne(order.getReference());
 
-        assertThat(oneOrder.getName(), is(equalTo("Jose")));
+        assertThat(oneOrder.getName(), is(equalTo("name-34")));
     }
 
     @Test
     public void delete() throws Exception {
-        clearTable();
-        Order order = createOrder();
+        Order order = createOrder(5,2);
         repository.create(order.getReference(), order);
 
         repository.delete(order.getReference());
 
         assertThat(repository.findAll().size(), is(equalTo(0)));
 
-    }
-
-    private Order createOrder() {
-        List<Integer> products=new ArrayList<>();
-        products.add(1);
-        products.add(2);
-        return new Order(100,"Pepe","Corredera","pca@gmail.com",products);
-    }
-
-    private void clearTable() {
-        List<Order> orders = repository.findAll();
-        orders.stream().forEach(order -> repository.delete(order.getReference()));
     }
 
 }
